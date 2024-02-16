@@ -4,6 +4,21 @@ import { connectDB } from "./db/index.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+app.use(express.json());
+
+import rootRouter from "./routes/index.js";
+app.use("/api", rootRouter);
+
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+
+  res.status(statusCode).json({
+    success: false,
+    statusCode,
+    message,
+  });
+});
 
 connectDB()
   .then(() => {

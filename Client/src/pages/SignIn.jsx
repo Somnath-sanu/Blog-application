@@ -1,13 +1,33 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import axios from "axios";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+  initialPhase
+} from "../redux/user/userSlice";
+
+import { useDispatch, useSelector } from "react-redux";
+import OAuth from "../components/OAuth";
 
 function SignIn() {
   const [formData, setFormData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  // const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState(null);
+
+  const { error, loading } = useSelector((state) => state.user);
+  //! error : state.user.error , loading : state.user.loading
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(initialPhase())
+  },[])
+
+ 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -16,31 +36,52 @@ function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!formData.email || !formData.password) {
+      // return setError("Password must be 4 or more characters long");
+      return dispatch(
+        signInFailure("Password must be 4 or more characters long")
+      );
+    }
+
     try {
-      setError(null);
-      setLoading(true);
+      // setError(null);
+      // setLoading(true);
+      dispatch(signInStart());
 
       const { data } = await axios.post("/api/auth/signin", {
         ...formData,
       });
 
+      // console.log(data);
+      //! only on success = true , data will console , so if(data) {} will also woek same
+
+      // if(data.success === false){
+      //   return dispatch(signInFailure(data.message));
+      // }
+      //! this will work when u dont mention error status code in server
+      //! axios is smart enough, error status code goes to catch
+
       if (data.success) {
-        console.log(data);
-        setLoading(false);
+        // console.log(data);
+        // setLoading(false);
+        dispatch(signInSuccess(data));
         navigate("/");
       }
     } catch (error) {
-      if (error.response.data.message === "Fill all fields correctly") {
-        return setError("Please fill all the fields correctly");
-      }
-      if (error.response.data.message === "User not exists!!!") {
-        return setError("User not exists !!");
-      }
-      if (error.response.data.message === "Incorrect Password!!") {
-        return setError("Incorrect Password!!");
-      }
-      console.log("ERROR || HandleSubmit || ", error);
-      setLoading(false);
+      // if (error.response.data.message === "Fill all fields correctly") {
+      //   setError("Please fill all the fields correctly");
+      // }
+      // if (error.response.data.message === "User not exists!!!") {
+      //   setError("User does not exists !!");
+      // }
+      // if (error.response.data.message === "Incorrect Password!!") {
+      //   setError("Incorrect Password!!");
+      // }
+
+      // setError(error.response.data.message);
+      dispatch(signInFailure(error.response.data.message));
+      // console.log("ERROR || HandleSubmit || ", error);
+      // setLoading(false);
     }
   };
 
@@ -75,6 +116,8 @@ function SignIn() {
                 placeholder="name@company.com"
                 id="email"
                 onChange={handleChange}
+                autoFocus
+                required
               />
             </div>
             <div>
@@ -84,6 +127,8 @@ function SignIn() {
                 placeholder="*********"
                 id="password"
                 onChange={handleChange}
+                required
+                minLength="4"
               />
             </div>
             <Button
@@ -100,6 +145,7 @@ function SignIn() {
                 "Sign In"
               )}
             </Button>
+            <OAuth/>
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span>Don&apos;t have an account?</span>
@@ -107,7 +153,7 @@ function SignIn() {
               Sign Up
             </Link>
           </div>
-          {error && (
+          {error &&  (
             <Alert color="failure" className="mt-5">
               {" "}
               {error}{" "}

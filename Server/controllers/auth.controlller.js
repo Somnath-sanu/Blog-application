@@ -81,16 +81,22 @@ export const signin = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(401).json({ message: "User not exists!!!" });
+      return res
+        .status(401)
+        .json({ success: false, message: "User does not exists!!!" });
     }
 
     const validPassword = await bcrypt.compare(password, user.password);
 
     if (!validPassword) {
-      return res.status(401).json({ message: "Incorrect Password!!" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Incorrect Password!!" });
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_KEY);
+
+    
 
     return res
       .status(200)
@@ -100,10 +106,49 @@ export const signin = async (req, res) => {
         message: " User LoggedIn successfully",
         username: user.username,
         email: user.email,
+        _id: user._id,
       });
   } catch (error) {
     console.log("Error logging :", error);
     res.status(500).json({ error });
+  }
+};
+
+export const google = async (req, res) => {
+  const { email, name, googlePhotoUrl } = req.body;
+  try {
+    const user = await User.findOne({ email });
+
+    if (user) {
+      const token = jwt.sign({ userId: user._id }, process.env.JWT_KEY);
+      const { password, ...rest } = user._doc;
+      res
+        .status(200)
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .json(rest);
+    } else {
+      const generatedPassword = Math.random().toString(36).slice(-8);
+      const hashedPassword = await bcrypt.hash(generatedPassword, 10);
+      const newUser = await User.create({
+        username: name,
+        email,
+        password: hashedPassword,
+        profilePicture: googlePhotoUrl,
+      });
+
+      const token = jwt.sign({ userId: newUser._id }, process.env.JWT_KEY);
+      const { password, ...rest } = newUser._doc;
+      res
+        .status(200)
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .json(rest);
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
 

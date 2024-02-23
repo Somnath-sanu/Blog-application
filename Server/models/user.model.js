@@ -20,6 +20,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Password is required"],
     },
+    profilePicture: {
+      type: String,
+      default:
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+    },
   },
   {
     timestamps: true,
@@ -32,7 +37,6 @@ userSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
-
 
 export const User = mongoose.model("User", userSchema);
 

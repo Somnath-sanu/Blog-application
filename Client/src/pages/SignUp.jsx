@@ -1,13 +1,21 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import OAuth from "../components/OAuth";
+import { initialPhase } from "../redux/user/userSlice";
+import { useDispatch } from "react-redux";
 
 function SignUp() {
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(initialPhase());
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -15,6 +23,10 @@ function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.password.length < 4) {
+      return setError("Password must be 4 or more characters long");
+    }
 
     try {
       setError(null);
@@ -27,16 +39,16 @@ function SignUp() {
       if (data.success) {
         console.log(data);
         setLoading(false);
-        navigate("/sign-in")
+        navigate("/sign-in");
       }
     } catch (error) {
       if (error.response.data.message === "Fill all fields correctly") {
-        return setError("Please fill all the fields correctly");
+        setError("Please fill all the fields correctly");
       }
       if (error.response.data.message === "User already exists !!") {
-        return setError("User already exists !!");
+        setError("User already exists !!");
       }
-      console.log("ERROR || HandleSubmit || ", error);
+      // console.log("ERROR || HandleSubmit || ", error);
       setLoading(false);
     }
   };
@@ -72,6 +84,9 @@ function SignUp() {
                 placeholder="Username"
                 id="username"
                 onChange={handleChange}
+                required
+                autoFocus
+                minLength="4"
               />
             </div>
             <div>
@@ -81,6 +96,7 @@ function SignUp() {
                 placeholder="Email"
                 id="email"
                 onChange={handleChange}
+                required
               />
             </div>
             <div>
@@ -90,6 +106,8 @@ function SignUp() {
                 placeholder="Password"
                 id="password"
                 onChange={handleChange}
+                required
+                minLength="4"
               />
             </div>
             <Button
@@ -106,6 +124,7 @@ function SignUp() {
                 "Sign Up"
               )}
             </Button>
+            <OAuth />
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span>Have an account?</span>

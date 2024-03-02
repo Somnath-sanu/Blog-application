@@ -4,15 +4,16 @@ export const verifyToken = (req, res, next) => {
   const token = req.cookies.access_token;
   // console.log(token);
   if (!token) {
-    return res.status(403).json({ message: "User is Unauthorised" });
+    return res.status(403).json({ msg: "User is Unauthorised" });
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_KEY, (err, user) => {
       if (err) {
-        return res.status(403).json({ message: "User is Unauthorised" });
+        return res.status(403).json({ msg: "User is Unauthorised" });
       }
 
       req.userId = user.userId;
+      req.isAdmin = user.isAdmin;
       next();
     });
 
@@ -22,7 +23,7 @@ export const verifyToken = (req, res, next) => {
     // req.userId = decoded.userId;
     // next();
   } catch (error) {
-    return res.status(403).json({ message: "Error at verifying token" });
+    return res.status(403).json({ msg: "Error at verifying token" });
   }
 };
 

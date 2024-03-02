@@ -94,7 +94,7 @@ export const signin = async (req, res) => {
         .json({ success: false, message: "Incorrect Password!!" });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_KEY);
+    const token = jwt.sign({ userId: user._id , isAdmin : user.isAdmin }, process.env.JWT_KEY);
 
     
 
@@ -107,6 +107,7 @@ export const signin = async (req, res) => {
         username: user.username,
         email: user.email,
         _id: user._id,
+        isAdmin : user.isAdmin
       });
   } catch (error) {
     console.log("Error logging :", error);
@@ -120,7 +121,7 @@ export const google = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user) {
-      const token = jwt.sign({ userId: user._id }, process.env.JWT_KEY);
+      const token = jwt.sign({ userId: user._id , isAdmin : user.isAdmin }, process.env.JWT_KEY);
       const { password, ...rest } = user._doc;
       res
         .status(200)
@@ -138,7 +139,7 @@ export const google = async (req, res) => {
         profilePicture: googlePhotoUrl,
       });
 
-      const token = jwt.sign({ userId: newUser._id }, process.env.JWT_KEY);
+      const token = jwt.sign({ userId: newUser._id , isAdmin :newUser.isAdmin }, process.env.JWT_KEY);
       const { password, ...rest } = newUser._doc;
       res
         .status(200)

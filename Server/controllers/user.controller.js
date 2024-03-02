@@ -39,7 +39,11 @@ export const updateUser = async (req, res) => {
       .json({ msg: "You are not allowed to update this user" });
   }
 
-  const { success } = await updateSchema.safeParseAsync(req.body);
+  const { success, error } = await updateSchema.safeParseAsync(req.body);
+
+  if (error) {
+    return res.status(403).json({ msg: error.errors[0].message });
+  }
 
   if (!success) {
     return res.status(403).json({ msg: "Please fill inputs correctly" });
@@ -65,7 +69,7 @@ export const updateUser = async (req, res) => {
     const { password, createdAt, updatedAt, __v, ...rest } = updatedUser._doc;
     return res.status(200).json(rest);
   } catch (error) {
-    res.status(409).json({ msg: "Error Occured!!!", error });
+    res.status(409).json({ msg: "Username or email already exists", error });
   }
 };
 
@@ -76,7 +80,7 @@ export const deleteUser = async (req, res) => {
   if (req.userId !== req.params.userId) {
     return res
       .status(400)
-      .json({ msg: "You are not allowed to update this user" });
+      .json({ msg: "You are not allowed to delete this user" });
   }
 
   try {
@@ -94,6 +98,73 @@ export const signout = (req, res) => {
       .status(200)
       .json("User has been signed out");
   } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getUsers = async (req, res) => {
+  if (!req.isAdmin) {
+    return res
+      .status(403)
+      .json({ msg: "You are not allowed to see all users" });
+  }
+
+  try {
+    const startIndex = parseInt(req.query.startIndex) || 0;
+    const limit = parseInt(req.query.limit) || 9;
+    const sortDirection = req.query.sort === "asc" ? 1 : -1;
+
+    const users = await User.find()
+      .sort({ createdAt: sortDirection })
+      .skip(startIndex)
+      .limit(limit);
+
+   
+
+    const usersWithoutPassword = users.map((user) => {
+      const { password, ...rest } = user._doc;
+      // console.log(user._doc); // { all users documents }
+      return rest;
+    });
+
+    
+
+    const totalUsers = await User.countDocuments();
+
+    const now = new Date();
+
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+
+    const lastMonthUsers = await User.countDocuments({
+      createdAt: { $gte: oneMonthAgo },
+    });
+
+    res.status(200).json({
+      users: usersWithoutPassword,
+      totalUsers,
+      lastMonthUsers,
+    });
+  } catch (error) {
+    res.json(500).json({ error });
+    console.log(error);
+  }
+};
+
+export const getUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    const { password, ...rest } = user._doc;
+    res.status(200).json(rest);
+  } catch (error) {
+    res.json(500).json({ error });
     console.log(error);
   }
 };

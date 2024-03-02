@@ -26,6 +26,7 @@ import axios from "axios";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 export default function DashProfile() {
   const { currentUser } = useSelector((state) => state.user);
@@ -102,6 +103,7 @@ export default function DashProfile() {
           setImageFileUrl(downloadURL);
           setFormData({ ...formData, profilePicture: downloadURL });
           setImageFileUploading(false);
+          setImageUploadProgress(null)
         });
       }
     );
@@ -123,18 +125,18 @@ export default function DashProfile() {
     if (Object.keys(formData).length == 0) {
       return setError("No changes made!!!");
     }
-    if (formData.username?.includes(" ")) {
-      return setError("Username cannot contain spaces");
-    }
-    if (!formData.username?.match(/^[a-zA-Z0-9]+$/)) {
-      return setError("Username can only contain letters and numbers");
-    }
+    // if (formData.username?.includes(" ")) {
+    //   return setError("Username cannot contain spaces");
+    // }
+    // if (!formData.username?.match(/^[a-zA-Z0-9]+$/)) {
+    //   return setError("Username can only contain letters and numbers");
+    // }
 
-    if (formData?.username?.length < 4 || formData?.username?.length > 20)
-      return setError("Username must be between 4-20 characters long");
+    // if (formData?.username?.length < 4 || formData?.username?.length > 20)
+    //   return setError("Username must be between 4-20 characters long");
 
-    if (formData?.password?.length < 4)
-      return setError("Password must be at least 4 characters");
+    // if (formData?.password?.length < 4)
+    //   return setError("Password must be at least 4 characters");
 
     if (imageFileUploading) return;
 
@@ -146,40 +148,52 @@ export default function DashProfile() {
       });
 
       if (data) {
-        console.log(data);
+        // console.log(data);
         setError(null);
         setUserUpdateSuccess("User's profile updated successfully");
         toast.success("User's profile updated successfully", toastOptions);
         dispatch(updateSuccess(data));
       }
     } catch (error) {
-      console.log(error);
-      if (error.response.status === 409) {
-        setError("Username or email already exists");
-        toast.error("Username or email already exists", toastOptions);
-        dispatch(updateFailure("Username or email already exists"));
-        return;
-      }
-      if (error.response.data.message === "User is Unauthorised") {
+      // console.log(error);
+
+      // const {response} = error;
+      // console.log(response);
+
+      if (error.response.data.msg === "User is Unauthorised") {
+        //!middleware error
         setError("User is Unauthorised");
-        toast.error("Please LogIn again!!!", toastOptions);
+        toast.warning("Please Log-in again : (", toastOptions);
         dispatch(updateFailure("User is Unauthorised"));
+        handleSignout();
+        // window.location.reload();
         return;
       }
 
-      if (error.response.status === 403) {
-        setError("Please fill all the inputs correctly");
-        toast.error("Please fill all the inputs correctly", toastOptions);
-        dispatch(updateFailure("Please fill all the inputs correctly"));
-        return;
-      }
-      if (error.response.status === 400) {
-        setError("You are not allowed to update this user");
-        toast.error("You are not allowed to update this user", toastOptions);
+      setError(error.response.data.msg);
+      toast.error(error.response.data.msg, toastOptions);
+      dispatch(updateFailure(error.response.data.msg));
 
-        dispatch(updateFailure("You are not allowed to update this user"));
-        return;
-      }
+      // if (error.response.status === 409) {
+      //   setError("Username or email already exists");
+      //   toast.error("Username or email already exists", toastOptions);
+      //   dispatch(updateFailure("Username or email already exists"));
+      //   return;
+      // }
+
+      // if (error.response.status === 403) {
+      //   setError("Please fill all the inputs correctly");
+      //   toast.error("Please fill all the inputs correctly", toastOptions);
+      //   dispatch(updateFailure("Please fill all the inputs correctly"));
+      //   return;
+      // }
+      // if (error.response.status === 400) {
+      //   setError("You are not allowed to update this user");
+      //   toast.error("You are not allowed to update this user", toastOptions);
+
+      //   dispatch(updateFailure("You are not allowed to update this user"));
+      //   return;
+      // }
     }
   };
 
@@ -193,20 +207,31 @@ export default function DashProfile() {
       if (data) {
         // console.log(data);
         dispatch(deleteUserSuccess());
+        window.location.reload();
       }
     } catch (error) {
       // console.log(error);
-      if (error.response.data.message === "User is Unauthorised") {
-        setError("User is Unauthorised");
-        toast.error("Please LogIn again!!!", toastOptions);
+
+      if (error.response.data.msg === "User is Unauthorised") {
         dispatch(deleteUserFailure("User is Unauthorised"));
-        return;
-      } else {
-        setError("You are not allowed to update this user");
-        toast.error("Please LogIn again!!!", toastOptions);
-        dispatch(deleteUserFailure("User is Unauthorised"));
-        return;
+        handleSignout();
       }
+
+      setError(error.response.data.msg);
+      toast.error(error.response.data.msg, toastOptions);
+      dispatch(updateFailure(error.response.data.msg));
+
+      // if (error.response.data.msg === "User is Unauthorised") {
+      //   setError("User is Unauthorised");
+      //   toast.warning("Please Log-in again!!!", toastOptions);
+      //   dispatch(deleteUserFailure("User is Unauthorised"));
+      //   return;
+      // } else {
+      //   setError("You are not allowed to update this user");
+      //   toast.error("Please Log-in again!!!", toastOptions);
+      //   dispatch(deleteUserFailure("User is Unauthorised"));
+      //   return;
+      // }
     }
   };
 
@@ -304,6 +329,17 @@ export default function DashProfile() {
             "Update"
           )}
         </Button>
+
+        <Link to={"/create-post"}>
+          <Button
+            type="button"
+            className="w-full"
+            gradientDuoTone="purpleToPink"
+          >
+            Create a post
+          </Button>
+        </Link>
+
         {error && <Alert color="failure">{error}</Alert>}
         {userUpdateSuccess && (
           <Alert color="success">{userUpdateSuccess}</Alert>

@@ -30,6 +30,31 @@ function UpdatePost() {
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
 
+  const toolbarOptions = [
+    ["bold", "italic", "underline", "strike"], // toggled buttons
+    ["blockquote", "code-block"],
+    ["link", "image", "video", "formula"],
+
+    [{ header: 1 }, { header: 2 }], // custom button values
+    [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
+    [{ script: "sub" }, { script: "super" }], // superscript/subscript
+    [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+    [{ direction: "rtl" }], // text direction
+
+    [{ size: ["small", false, "large", "huge"] }], // custom dropdown
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+    [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+    [{ font: [] }],
+    [{ align: [] }],
+
+    ["clean"], // remove formatting button
+  ];
+
+  const module = {
+    toolbar: toolbarOptions,
+  };
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -129,7 +154,6 @@ function UpdatePost() {
         // console.log(data);
         setPublishError(null);
         navigate(`/post/${data.slug}`);
-
       }
     } catch (error) {
       console.log(error);
@@ -156,7 +180,7 @@ function UpdatePost() {
               setFormData({ ...formData, title: e.target.value })
             }
             disabled={imageUploadProgress}
-            value={formData.title || ''}
+            value={formData.title || ""}
             //! By adding || '' after formData.title, you ensure that if formData.title is initially undefined, it will default to an empty string, thus making the input controlled from the start.
           />
           <Select
@@ -213,7 +237,6 @@ function UpdatePost() {
             src={formData?.image}
             alt="upload"
             className="w-full h-72 object-contain"
-            
           />
         )}
         <ReactQuill
@@ -226,6 +249,7 @@ function UpdatePost() {
             setFormData({ ...formData, content: value });
           }}
           value={formData.content}
+          modules={module}
         />
         <Button
           type="submit"

@@ -108,7 +108,7 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
         ) : (
           <>
             <div>
-              <p className="text-gray-700 pb-2 text-xl font-serif m-2">
+              <p className="text-gray-700 pb-2 text-xl font-serif m-2 dark:text-white">
                 {comment.content}
               </p>
               <div className="flex items-center pt-2 text-xs border-t dark:border-gray-700 max-w-fit gap-2">

@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 .env
 .eslintrc.cjs
+src/assests
+README.md

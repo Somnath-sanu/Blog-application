@@ -1,17 +1,21 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import {
   signInStart,
   signInSuccess,
   signInFailure,
-  initialPhase
+  initialPhase,
 } from "../redux/user/userSlice";
 
 import { useDispatch, useSelector } from "react-redux";
 import OAuth from "../components/OAuth";
+import blog from "../assests/blog5.jpg";
+import { ToastContainer, toast, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function SignIn() {
   const [formData, setFormData] = useState({});
@@ -24,10 +28,8 @@ function SignIn() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(initialPhase())
-  },[])
-
- 
+    dispatch(initialPhase());
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -93,16 +95,12 @@ function SignIn() {
         <div className="flex-1">
           <Link to="/" className="text-4xl font-bold dark:text-white">
             {" "}
-            <span className="px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white">
-              Somnath&apos;s
+            <span className="flex gap-1 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500 font-serif text-5xl">
+              BL
+              <img src={blog} alt="" className="w-11 rounded-full" />G
             </span>
-            Blog
           </Link>
-          <p className="text-sm mt-5">
-            {" "}
-            Sign up to continue Lorem ipsum dolor sit amet consectetur,
-            adipisicing elit. Ipsam, quisquam?
-          </p>
+          <p className="text-sm mt-5 font-mono"> </p>
         </div>
 
         {/* right */}
@@ -145,7 +143,7 @@ function SignIn() {
                 "Sign In"
               )}
             </Button>
-            <OAuth/>
+            <OAuth />
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span>Don&apos;t have an account?</span>
@@ -153,7 +151,7 @@ function SignIn() {
               Sign Up
             </Link>
           </div>
-          {error &&  (
+          {error && (
             <Alert color="failure" className="mt-5">
               {" "}
               {error}{" "}
@@ -161,6 +159,7 @@ function SignIn() {
           )}
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

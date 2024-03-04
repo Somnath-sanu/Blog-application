@@ -36,8 +36,10 @@ export default function DashUsers() {
   const handleShowMore = async () => {
     const startIndex = users.length;
     try {
-      const {data} = await axios.get(`/api/user/getusers?startIndex=${startIndex}`);
-      
+      const { data } = await axios.get(
+        `/api/user/getusers?startIndex=${startIndex}`
+      );
+
       if (data) {
         setUsers((prev) => [...prev, ...data.users]);
         if (data.users.length < 9) {
@@ -51,8 +53,8 @@ export default function DashUsers() {
 
   const handleDeleteUser = async () => {
     try {
-      const {data} = await axios.delete(`/api/user/delete/${userIdToDelete}`);
-      
+      const { data } = await axios.delete(`/api/user/delete/${userIdToDelete}`);
+
       if (data) {
         setUsers((prev) => prev.filter((user) => user._id !== userIdToDelete));
         setShowModal(false);

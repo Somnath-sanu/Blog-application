@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Spinner, Button } from "flowbite-react";
 import PostCard from "../components/PostCard";
@@ -13,6 +13,8 @@ function PostPage() {
   const [error, setError] = useState(false);
   const [post, setPost] = useState(null);
   const [recentPosts, setRecentPosts] = useState(null);
+
+  // console.log(useLocation()); //? pathname:"/post/my-2nd-post" , search:"" , key:"1787cgv4"
 
   useEffect(() => {
     const fetchPost = async () => {

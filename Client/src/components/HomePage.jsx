@@ -26,8 +26,8 @@ export default function HomePage({ post }) {
 
   // console.log(users);
   return (
-    <div className=" max-w-[80vw] text-ellipsis overflow-hidden">
-      <div className="max-h-[10rem] mt-4 m-10 shadow hover:shadow-lg flex justify-between transition-all truncate md:flex-col relative text-ellipsis overflow-hidden">
+    <div className=" max-w-[80vw] text-ellipsis overflow-hidden rounded-lg ">
+      <div className="max-h-[10rem] mt-4 m-10 shadow hover:shadow-lg flex justify-between transition-all truncate md:flex-col relative text-ellipsis overflow-hidden dark:bg-white p-1 rounded-sm dark:shadow-slate-600 duration-300 dark:shadow-none dark:border dark:hover:bg-white/95">
         <div className=" p-4  flex flex-col">
           <div className="w-[80%] h-full ">
             <div className=" hidden sm:inline">
@@ -38,7 +38,7 @@ export default function HomePage({ post }) {
                   className="object-contain"
                 />
               </span>
-              <span className="px-2 text-gray-500">
+              <span className="px-2 text-gray-500 ">
                 {users && users.username}
               </span>
             </div>
@@ -46,18 +46,18 @@ export default function HomePage({ post }) {
               {post && new Date(post.createdAt).toLocaleDateString()}
             </span>
             <Link to={`/post/${post.slug}`}>
-              <h1 className="text-black dark:text-white font-bold sm:text-3xl pb-2  text-ellipsis overflow-hidden text-wrap sm:text-nowrap text-xl truncate">
+              <h1 className="text-black  font-bold sm:text-3xl pb-2  text-ellipsis overflow-hidden text-wrap sm:text-nowrap text-xl truncate dark:text-black">
                 {post && post.title}
               </h1>
             </Link>
           </div>
           <div
-            className="text-black dark:text-white  
+            className="text-black dark:text-black  
                max-w-[50vw] h-full font-serif text-ellipsis overflow-hidden "
           >
             <p
               dangerouslySetInnerHTML={{ __html: post.content }}
-              className="truncate text-wrap dark:text-white  overflow-hidden hidden sm:inline w-fit"
+              className="truncate text-wrap dark:text-black  overflow-hidden hidden sm:inline w-fit"
             ></p>
           </div>
         </div>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useState, useEffect } from "react";
@@ -5,6 +6,7 @@ import axios from "axios";
 import OAuth from "../components/OAuth";
 import { initialPhase } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
+import blog from "../assests/blog5.jpg";
 
 function SignUp() {
   const [formData, setFormData] = useState({});
@@ -61,15 +63,15 @@ function SignUp() {
         <div className="flex-1">
           <Link to="/" className="text-4xl font-bold dark:text-white">
             {" "}
-            <span className="px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white">
-              Somnath&apos;s
+            <span className="flex gap-1 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500 font-serif text-5xl">
+              BL
+              <img src={blog} alt="" className="w-11 rounded-full" />G
             </span>
-            Blog
           </Link>
-          <p className="text-sm mt-5">
+          <p className="text-sm mt-5 font-serif">
             {" "}
-            Sign up to continue Lorem ipsum dolor sit amet consectetur,
-            adipisicing elit. Ipsam, quisquam?
+            Please sign up and then sign in with the same credentials to create
+            a post.
           </p>
         </div>
 

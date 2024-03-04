@@ -24,6 +24,7 @@ function UpdatePost() {
   const [formData, setFormData] = useState({});
   const [publishError, setPublishError] = useState(null);
 
+  // console.log(useParams()); //? {postId: '65e370682a6a0530db5916d0'}
   const { postId } = useParams();
 
   const navigate = useNavigate();
@@ -47,6 +48,8 @@ function UpdatePost() {
 
     fetchPosts();
   }, [postId]);
+
+  // console.log(formData);
 
   const handleUpdloadImage = async () => {
     try {
@@ -105,18 +108,18 @@ function UpdatePost() {
     }
 
     if (!Object.keys(formData).includes("content")) {
-      return setPublishError("Content must be at least 100 words");
+      return setPublishError("Content must be at least 50 words");
     }
 
     // console.log(formData.content.length);
 
-    if (formData.content?.length < 20) {
-      return setPublishError("Content must be at least 20 words");
+    if (formData.content?.length < 50) {
+      return setPublishError("Content must be at least 50 words");
     }
 
     try {
       const { data } = await axios.put(
-        `/api/post/updatepost/${formData._id}/${currentUser._id}`,
+        `/api/post/updatepost/${postId}/${currentUser._id}`,
         {
           ...formData,
         }
@@ -153,7 +156,8 @@ function UpdatePost() {
               setFormData({ ...formData, title: e.target.value })
             }
             disabled={imageUploadProgress}
-            value={formData.title}
+            value={formData.title || ''}
+            //! By adding || '' after formData.title, you ensure that if formData.title is initially undefined, it will default to an empty string, thus making the input controlled from the start.
           />
           <Select
             onChange={(e) =>
@@ -163,9 +167,17 @@ function UpdatePost() {
             value={formData.category}
           >
             <option value="uncategorized">Select a category</option>
-            <option value="javascript">JavaScript</option>
-            <option value="reactjs">React.js</option>
-            <option value="nextjs">Next.js</option>
+            <option value="coding">Coding</option>
+            <option value="science">Science and Technology</option>
+            <option value="lifestyle">Lifestyle</option>
+            <option value="fashion">Fashion</option>
+            <option value="beauty">Beauty</option>
+            <option value="travel">Travel</option>
+            <option value="tech">Tech</option>
+            <option value="health">Health and Fitness</option>
+            <option value="food">Food and Recipe</option>
+            <option value="education">Education</option>
+            <option value="music">Music</option>
           </Select>
         </div>
         <div className="flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3">
@@ -198,9 +210,10 @@ function UpdatePost() {
         {imageUploadError && <Alert color="failure">{imageUploadError}</Alert>}
         {formData?.image && (
           <img
-            src={formData.image}
+            src={formData?.image}
             alt="upload"
             className="w-full h-72 object-contain"
+            
           />
         )}
         <ReactQuill

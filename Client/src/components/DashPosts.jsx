@@ -25,7 +25,7 @@ function DashPosts() {
     const fetchPosts = async () => {
       try {
         const { data } = await axios.get(
-          `/api/post/getPosts?userId=${currentUser._id}`
+          `/api/post/getPosts?userId=${currentUser._id}&limit=9`
         );
 
         if (data) {
@@ -48,11 +48,11 @@ function DashPosts() {
   useEffect(() => {
     const fetchPosts2 = async () => {
       try {
-        const { data } = await axios.get(`/api/post/getPosts`);
+        const { data } = await axios.get(`/api/post/getPosts?limit=50`);
 
         if (data) {
           setUserPosts(data.posts);
-          if (data.posts.length < 9) {
+          if (data.posts.length < 50) {
             setShowMore(false);
           }
         }
@@ -69,7 +69,7 @@ function DashPosts() {
 
     try {
       const { data } = await axios.get(
-        `api/post/getPosts?userId=${currentUser._id}&startIndex=${startIndex}`
+        `api/post/getPosts?userId=${currentUser._id}&startIndex=${startIndex}&limit=9`
       );
       if (data) {
         setUserPosts([...userPosts, ...data.posts]);

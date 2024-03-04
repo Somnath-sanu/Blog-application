@@ -38,8 +38,8 @@ export const create = async (req, res) => {
 export const getPosts = async (req, res) => {
   try {
     const startIndex = parseInt(req.query.startIndex) || 0;
-    const limit = parseInt(req.query.limit) || 9;
-    const sortDirection = req.query.order === "asc" ? 1 : -1;
+    const limit = parseInt(req.query.limit) || 4;
+    const sortDirection = req.query.sort === "asc" ? 1 : -1;
 
     const posts = await Post.find({
       ...(req.query.userId && { userId: req.query.userId }),
@@ -49,7 +49,7 @@ export const getPosts = async (req, res) => {
       ...(req.query.searchTerm && {
         $or: [
           { title: { $regex: req.query.searchTerm, $options: "i" } },
-          { content: { $regex: req.query.searchTerm, $options: "i" } },
+          { content: { $regex: req.query.searchTerm, $options: "i" } }, 
         ],
       }),
     })
@@ -106,6 +106,8 @@ export const updatepost = async (req, res) => {
   }
 
   try {
+
+    // console.log( req.params.postId);
     const updatedPost = await Post.findByIdAndUpdate(
       req.params.postId,
       {

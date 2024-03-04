@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -8,7 +9,7 @@ import {
   HiOutlineUserGroup,
 } from "react-icons/hi";
 import { Button, Table } from "flowbite-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function DashboardComp() {
   const [users, setUsers] = useState([]);
@@ -21,6 +22,13 @@ export default function DashboardComp() {
   const [lastMonthPosts, setLastMonthPosts] = useState(0);
   const [lastMonthComments, setLastMonthComments] = useState(0);
   const { currentUser } = useSelector((state) => state.user);
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!currentUser.isAdmin) {
+      navigate("/dashboard?tab=profile");
+    }
+  }, []);
 
   useEffect(() => {
     const fetchUsers = async () => {

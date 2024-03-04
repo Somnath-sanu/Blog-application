@@ -77,9 +77,9 @@ export const updateUser = async (req, res) => {
 //$set update the value that has been provided without disturbing others
 
 export const deleteUser = async (req, res) => {
-  if (req.userId !== req.params.userId) {
+  if (!req.isAdmin && req.userId !== req.params.userId) {
     return res
-      .status(400)
+      .status(403)
       .json({ msg: "You are not allowed to delete this user" });
   }
 

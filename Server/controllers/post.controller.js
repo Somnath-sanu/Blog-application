@@ -49,33 +49,32 @@ export const getPosts = async (req, res) => {
       ...(req.query.searchTerm && {
         $or: [
           { title: { $regex: req.query.searchTerm, $options: "i" } },
-          { content: { $regex: req.query.searchTerm, $options: "i" } }, 
+          { content: { $regex: req.query.searchTerm, $options: "i" } },
         ],
       }),
     })
       .sort({ updatedAt: sortDirection })
       .skip(startIndex)
-      .limit(limit); 
+      .limit(limit);
 
-    const totalPosts = await Post.countDocuments(); 
+    const totalPosts = await Post.countDocuments();
 
     const now = new Date();
 
     const oneMonthAgo = new Date(
       now.getFullYear(),
       now.getMonth() - 1,
-      now.getDate() 
+      now.getDate()
     );
 
     // console.log(oneMonthAgo) // 2024-01-27T18:30:00.000Z
-
 
     const lastMonthPosts = await Post.countDocuments({
       createdAt: { $gte: oneMonthAgo },
     });
 
     res.status(200).json({
-      posts, //! Array 
+      posts, //! Array
       totalPosts,
       lastMonthPosts,
     });
@@ -85,28 +84,29 @@ export const getPosts = async (req, res) => {
   }
 };
 
-
-
-export const deletePost = async (req,res) => {
-  if(req.userId !== req.params.userId){
-    return res.status(403).json({msg: "You are not allowed to delete this post"})
+export const deletePost = async (req, res) => {
+  if (req.userId !== req.params.userId) {
+    return res
+      .status(403)
+      .json({ msg: "You are not allowed to delete this post" });
   }
 
   try {
-    await Post.findByIdAndDelete(req.params.postId)
-    res.status(200).json({msg : "The post has been deleted"})
+    await Post.findByIdAndDelete(req.params.postId);
+    res.status(200).json({ msg: "The post has been deleted" });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
 
 export const updatepost = async (req, res) => {
-  if(req.userId !== req.params.userId){
-    return res.status(403).json({msg: "You are not allowed to update this post"})
+  if (req.userId !== req.params.userId) {
+    return res
+      .status(403)
+      .json({ msg: "You are not allowed to update this post" });
   }
 
   try {
-
     // console.log( req.params.postId);
     const updatedPost = await Post.findByIdAndUpdate(
       req.params.postId,
@@ -123,6 +123,6 @@ export const updatepost = async (req, res) => {
 
     res.status(200).json(updatedPost);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};

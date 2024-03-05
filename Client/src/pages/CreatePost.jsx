@@ -132,6 +132,8 @@ function CreatePost() {
       return setPublishError("Content must be at least 50 words");
     }
 
+   
+
     try {
       const { data } = await axios.post("/api/post/create", {
         ...formData,

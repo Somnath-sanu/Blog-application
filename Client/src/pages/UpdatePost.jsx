@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { Alert, Button, FileInput, Select, TextInput } from "flowbite-react";
 import ReactQuill from "react-quill";
@@ -61,9 +62,10 @@ function UpdatePost() {
         const { data } = await axios.get(`/api/post/getPosts?postId=${postId}`);
 
         if (data) {
-          // console.log(data.posts);
+          setFormData(data.posts[0]);
+          // console.log(data.posts); //! Array of objects
           setPublishError(null);
-          setFormData(data.posts[0]); //! Array of objects
+          // console.log( "data",formData);
         }
       } catch (error) {
         console.log(error);
@@ -128,9 +130,10 @@ function UpdatePost() {
     if (formData?.category === "uncategorized") {
       return setPublishError("Please select a Category");
     }
-    if (!Object.keys(formData).includes("image")) {
-      return setPublishError("Please upload a image");
-    }
+
+    // if (!Object.keys(formData).includes("image")) {
+    //   return setPublishError("Please upload a image");
+    // }
 
     if (!Object.keys(formData).includes("content")) {
       return setPublishError("Content must be at least 50 words");
@@ -173,14 +176,13 @@ function UpdatePost() {
           <TextInput
             type="text"
             placeholder="Title"
-            required
             id="title"
             className="flex-1"
             onChange={(e) =>
               setFormData({ ...formData, title: e.target.value })
             }
             disabled={imageUploadProgress}
-            value={formData.title || ""}
+            value={(formData.title && formData.title) || ""}
             //! By adding || '' after formData.title, you ensure that if formData.title is initially undefined, it will default to an empty string, thus making the input controlled from the start.
           />
           <Select
@@ -188,7 +190,7 @@ function UpdatePost() {
               setFormData({ ...formData, category: e.target.value })
             }
             disabled={imageUploadProgress}
-            value={formData.category}
+            value={formData.category && formData?.category}
           >
             <option value="uncategorized">Select a category</option>
             <option value="coding">Coding</option>
@@ -232,7 +234,7 @@ function UpdatePost() {
           </Button>
         </div>
         {imageUploadError && <Alert color="failure">{imageUploadError}</Alert>}
-        {formData?.image && (
+        {formData.image && (
           <img
             src={formData?.image}
             alt="upload"
@@ -248,7 +250,7 @@ function UpdatePost() {
           onChange={(value) => {
             setFormData({ ...formData, content: value });
           }}
-          value={formData.content}
+          value={formData.content && formData.content}
           modules={module}
         />
         <Button

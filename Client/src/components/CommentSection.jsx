@@ -59,7 +59,6 @@ export default function CommentSection({ postId }) {
         );
 
         if (data) {
-         
           setComments(data.comments);
         }
       } catch (error) {
@@ -71,7 +70,6 @@ export default function CommentSection({ postId }) {
   }, [postId]);
 
   const handleLike = async (commentId) => {
-   
     try {
       if (!currentUser) {
         navigate("/sign-in");
@@ -81,7 +79,6 @@ export default function CommentSection({ postId }) {
       const { data } = await axios.put(`/api/comment/likeComment/${commentId}`);
 
       if (data) {
-        
         setComments(
           comments.map((comment) => {
             return comment._id === commentId
@@ -127,8 +124,6 @@ export default function CommentSection({ postId }) {
     }
   };
 
-
-
   return (
     <div className="max-w-2xl mx-auto w-full p-3">
       {currentUser ? (
@@ -164,7 +159,7 @@ export default function CommentSection({ postId }) {
             onChange={(e) => setComment(e.target.value)}
             value={comment}
             required
-            class="p-2 rounded placeholder:px-2 w-full px-0 text-sm text-gray-900 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
+            className="p-2 rounded placeholder:px-2 w-full px-0 text-sm text-gray-900 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
           />
           <div className="flex justify-between items-center mt-5">
             <p className="text-gray-500 text-xs">
@@ -172,7 +167,7 @@ export default function CommentSection({ postId }) {
             </p>
             <Button
               type="submit"
-              class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
+              className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
             >
               Post comment
             </Button>

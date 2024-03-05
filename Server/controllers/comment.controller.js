@@ -74,11 +74,14 @@ export const editComment = async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.commentId);
 
+    // console.log(comment.userId.toString());
+    // console.log(req.userId);
+
     if (!comment) {
       return res.status(404).json({ msg: "Comment not found" });
     }
 
-    if (comment.userId !== req.userId && !req.isAdmin) {
+    if (comment.userId.toString() !== req.userId && !req.isAdmin) {
       return res
         .status(403)
         .json({ msg: "You are not allowed to edit this comment" });
@@ -108,7 +111,7 @@ export const deleteComment = async (req, res) => {
       return res.status(404).json({ msg: "Comment not found" });
     }
 
-    if (comment.userId !== req.userId && !req.isAdmin) {
+    if (comment.userId.toString() !== req.userId && !req.isAdmin) {
       return res
         .status(403)
         .json({ msg: "You are not allowed to delete this comment" });

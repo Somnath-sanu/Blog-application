@@ -5,12 +5,26 @@ import { FaThumbsUp } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Button, Textarea } from "flowbite-react";
 import axios from "axios";
+import { ToastContainer, toast, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Comment({ comment, onLike, onEdit, onDelete }) {
   // console.log(comment)
   const [user, setUser] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(comment.content);
+
+  const toastOptions = {
+    position: "top-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "dark",
+    transition: Bounce,
+  };
 
   const { currentUser } = useSelector((state) => state.user);
   useEffect(() => {
@@ -19,7 +33,6 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
         const { data } = await axios.get(`/api/user/${comment.userId}`);
 
         if (data) {
-          
           setUser(data);
         }
       } catch (error) {
@@ -52,6 +65,9 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
         onEdit(comment, editedContent);
       }
     } catch (error) {
+      if (error.response.data.msg === "User is Unauthorised") {
+        toast.error("please sign-in again to continue", toastOptions);
+      }
       console.log(error);
     }
   };
@@ -153,6 +169,7 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
           </>
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 }

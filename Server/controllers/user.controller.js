@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import { User } from "../models/user.model.js";
 import zod from "zod";
+import { Comment } from "../models/comment.model.js";
+import { Post } from "../models/post.model.js";
 
 const updateSchema = zod.object({
   password: zod
@@ -85,7 +87,29 @@ export const deleteUser = async (req, res) => {
 
   try {
     await User.findByIdAndDelete(req.params.userId);
-    res.status(200).json({ msg: "User deleted successfully" });
+    const comments = await Comment.find({
+      userId: req.userId,
+    });
+
+    comments.map(async (comment) => {
+      await Comment.deleteMany({
+        _id: comment._id,
+      });
+    });
+
+    const posts = await Post.find({
+      userId: req.userId,
+    });
+
+    posts.map(async (post) => {
+      await Post.deleteMany({
+        _id: post._id,
+      });
+    });
+
+    res
+      .status(200)
+      .json({ msg: "User deleted successfully Along with posts and comments" });
   } catch (error) {
     console.log(error);
   }
@@ -98,6 +122,7 @@ export const signout = (req, res) => {
       .status(200)
       .json("User has been signed out");
   } catch (error) {
+    res.json(500).json({ error });
     console.log(error);
   }
 };
@@ -119,15 +144,11 @@ export const getUsers = async (req, res) => {
       .skip(startIndex)
       .limit(limit);
 
-   
-
     const usersWithoutPassword = users.map((user) => {
       const { password, ...rest } = user._doc;
       // console.log(user._doc); // { all users documents }
       return rest;
     });
-
-    
 
     const totalUsers = await User.countDocuments();
 

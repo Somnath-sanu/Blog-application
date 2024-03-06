@@ -6,8 +6,15 @@ import bcrypt from "bcrypt";
 const signupSchema = z.object({
   username: z
     .string({ required_error: "username is required" })
+    .trim()
     .min(4, { message: "Must be 4 or more characters long" })
-    .trim(),
+    .max(20, { message: "Username must be at most 20 characters" })
+    .refine((value) => !value.includes(" "), {
+      message: "Username cannot contain spaces",
+    })
+    .refine((value) => /^[a-zA-Z0-9]+$/.test(value), {
+      message: "Username can only contain letters and numbers",
+    }),
   email: z
     .string({ required_error: "email is required" })
     .email({ message: "Invalid email address" })
@@ -51,7 +58,7 @@ export const signup = async (req, res) => {
     }
   } catch (error) {
     console.log("Error while creating user", error);
-    return res.status(401).json({ success: false, error });
+    return res.status(500).json({ success: false, error });
     // next(error);
   }
 };
@@ -94,9 +101,10 @@ export const signin = async (req, res) => {
         .json({ success: false, message: "Incorrect Password!!" });
     }
 
-    const token = jwt.sign({ userId: user._id , isAdmin : user.isAdmin }, process.env.JWT_KEY);
-
-    
+    const token = jwt.sign(
+      { userId: user._id, isAdmin: user.isAdmin },
+      process.env.JWT_KEY
+    );
 
     return res
       .status(200)
@@ -107,7 +115,7 @@ export const signin = async (req, res) => {
         username: user.username,
         email: user.email,
         _id: user._id,
-        isAdmin : user.isAdmin
+        isAdmin: user.isAdmin,
       });
   } catch (error) {
     console.log("Error logging :", error);
@@ -121,7 +129,10 @@ export const google = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user) {
-      const token = jwt.sign({ userId: user._id , isAdmin : user.isAdmin }, process.env.JWT_KEY);
+      const token = jwt.sign(
+        { userId: user._id, isAdmin: user.isAdmin },
+        process.env.JWT_KEY
+      );
       const { password, ...rest } = user._doc;
       res
         .status(200)
@@ -139,7 +150,10 @@ export const google = async (req, res) => {
         profilePicture: googlePhotoUrl,
       });
 
-      const token = jwt.sign({ userId: newUser._id , isAdmin :newUser.isAdmin }, process.env.JWT_KEY);
+      const token = jwt.sign(
+        { userId: newUser._id, isAdmin: newUser.isAdmin },
+        process.env.JWT_KEY
+      );
       const { password, ...rest } = newUser._doc;
       res
         .status(200)
@@ -149,6 +163,7 @@ export const google = async (req, res) => {
         .json(rest);
     }
   } catch (error) {
+    res.json(500).json({ error });
     console.log(error);
   }
 };

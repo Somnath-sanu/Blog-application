@@ -39,7 +39,7 @@ function SignUp() {
       });
 
       if (data.success) {
-        console.log(data);
+        // console.log(data);
         setLoading(false);
         navigate("/sign-in");
       }

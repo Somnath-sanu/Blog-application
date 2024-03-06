@@ -7,7 +7,7 @@ export const createComment = async (req, res) => {
     const { content, postId, userId } = req.body;
 
     if (userId !== req.userId) {
-      return res 
+      return res
         .status(403)
         .json({ msg: "You are not allowed to create this comment" });
     }
@@ -56,12 +56,14 @@ export const likeComment = async (req, res) => {
       comment.likes.push(req.userId);
     } else {
       comment.numberOfLikes -= 1;
-      comment.likes.splice(userIndex, 1); 
+      comment.likes.splice(userIndex, 1);
     }
-    
-    await comment.save(); 
+
+    //! since i changed the comment data , i have to save it
+
+    await comment.save();
     // console.log(comment);
-    res.status(200).json({comment});
+    res.status(200).json({ comment });
   } catch (error) {
     console.log(error);
     res.status(500).json({ msg: "Server Error" });
@@ -121,7 +123,7 @@ export const deleteComment = async (req, res) => {
     res.status(200).json("Comment has been deleted");
   } catch (error) {
     console.log(error);
-    res.status(500).json({ msg: "Server Error" }); 
+    res.status(500).json({ msg: "Server Error" });
   }
 };
 

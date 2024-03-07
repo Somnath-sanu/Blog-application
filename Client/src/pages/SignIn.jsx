@@ -67,7 +67,7 @@ function SignIn() {
         // console.log(data);
         // setLoading(false);
         dispatch(signInSuccess(data));
-        navigate("/");
+        navigate("/dashboard?tab=profile");
       }
     } catch (error) {
       // if (error.response.data.message === "Fill all fields correctly") {

@@ -15,6 +15,7 @@ import UpdatePost from "./pages/UpdatePost";
 import ScrollToTop from "./components/ScrollToTop";
 import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
+import SigninSignupProtectedRoutes from "./components/SigninSignupProtectedRoutes";
 
 function App() {
   return (
@@ -24,9 +25,12 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/sign-up" element={<SignUp />} />
-        <Route path='/search' element={<Search/>} />
+        <Route element={<SigninSignupProtectedRoutes />}>
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/sign-up" element={<SignUp />} />
+        </Route>
+
+        <Route path="/search" element={<Search />} />
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
@@ -36,7 +40,7 @@ function App() {
         </Route>
         <Route path="/projects" element={<Projects />} />
         <Route path="/post/:postSlug" element={<PostPage />} />
-        <Route path="*" element={<NotFound/>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </BrowserRouter>

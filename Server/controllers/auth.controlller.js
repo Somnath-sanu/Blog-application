@@ -27,11 +27,12 @@ const signupSchema = z.object({
 
 export const signup = async (req, res) => {
   try {
-    const { success } = signupSchema.safeParse(req.body);
+    const { success, error } = signupSchema.safeParse(req.body);
+    // console.log(error.errors[0].message);
     if (!success) {
       return res
         .status(400)
-        .json({ success: false, message: "Fill all fields correctly" });
+        .json({ success: false, message: error.errors[0].message });
     }
     const { username, email, password } = req.body;
 
@@ -51,10 +52,23 @@ export const signup = async (req, res) => {
       password,
     });
 
+    const token = jwt.sign(
+      { userId: newUser._id, isAdmin: newUser.isAdmin },
+      process.env.JWT_KEY
+    );
+
     if (newUser) {
       return res
         .status(200)
-        .json({ success: true, message: " User created successfully" });
+        .cookie("access_token", token, { httpOnly: true })
+        .json({
+          success: true,
+          message: " User Created successfully",
+          username: newUser.username,
+          email: newUser.email,
+          _id: newUser._id,
+          isAdmin: newUser.isAdmin,
+        });
     }
   } catch (error) {
     console.log("Error while creating user", error);

@@ -4,7 +4,12 @@ import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import OAuth from "../components/OAuth";
-import { initialPhase } from "../redux/user/userSlice";
+import {
+  initialPhase,
+  signInFailure,
+  signInStart,
+  signInSuccess,
+} from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 import blog from "../assests/blog5.jpg";
 
@@ -33,6 +38,7 @@ function SignUp() {
     try {
       setError(null);
       setLoading(true);
+      dispatch(signInStart());
 
       const { data } = await axios.post("/api/auth/signup", {
         ...formData,
@@ -41,17 +47,21 @@ function SignUp() {
       if (data.success) {
         // console.log(data);
         setLoading(false);
-        navigate("/sign-in");
+        dispatch(signInSuccess(data));
+        navigate("/dashboard?tab=profile");
       }
     } catch (error) {
-      if (error.response.data.message === "Fill all fields correctly") {
-        setError("Please fill all the fields correctly");
-      }
-      if (error.response.data.message === "User already exists !!") {
-        setError("User already exists !!");
-      }
+      // console.log(error.response.data.message)
+      // if (error.response.data.message === "Fill all fields correctly") {
+      //   setError("Please fill all the fields correctly");
+      // }
+      // if (error.response.data.message === "User already exists !!") {
+      //   setError("User already exists !!");
+      // }
+      setError(error.response.data.message);
       // console.log("ERROR || HandleSubmit || ", error);
       setLoading(false);
+      dispatch(signInFailure(error.response.data.message));
     }
   };
 
@@ -68,10 +78,9 @@ function SignUp() {
               <img src={blog} alt="" className="w-11 rounded-full" />G
             </span>
           </Link>
-          <p className="text-sm mt-5 font-serif">
+          <p className="text-md mt-5 font-serif">
             {" "}
-            Please sign up and then sign in with the same credentials to create
-            a post.
+            Please sign up to create a post.
           </p>
         </div>
 

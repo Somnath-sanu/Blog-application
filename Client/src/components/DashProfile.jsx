@@ -163,7 +163,7 @@ export default function DashProfile() {
       if (error.response.data.msg === "User is Unauthorised") {
         //!middleware error
         setError("User is Unauthorised");
-        toast.warning("Please Log-in again : (", toastOptions);
+        toast.warning("Please Log-in again :(", toastOptions);
         dispatch(updateFailure("User is Unauthorised"));
         handleSignout();
         // window.location.reload();

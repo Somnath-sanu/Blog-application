@@ -110,6 +110,7 @@ export const deleteUser = async (req, res) => {
       });
 
     res
+      .clearCookie("access_token")
       .status(200)
       .json({ msg: "User deleted successfully Along with posts and comments" });
   } catch (error) {

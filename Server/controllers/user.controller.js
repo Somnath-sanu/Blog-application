@@ -88,24 +88,26 @@ export const deleteUser = async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.userId);
     const comments = await Comment.find({
-      userId: req.userId,
+      userId: req.params.userId,
     });
 
-    comments.map(async (comment) => {
-      await Comment.deleteMany({
-        _id: comment._id,
+    comments.length > 0 &&
+      comments.map(async (comment) => {
+        await Comment.deleteMany({
+          _id: comment._id,
+        });
       });
-    });
 
     const posts = await Post.find({
-      userId: req.userId,
+      userId: req.params.userId,
     });
 
-    posts.map(async (post) => {
-      await Post.deleteMany({
-        _id: post._id,
+    posts.length > 0 &&
+      posts.map(async (post) => {
+        await Post.deleteMany({
+          _id: post._id,
+        });
       });
-    });
 
     res
       .status(200)

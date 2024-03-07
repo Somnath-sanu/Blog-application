@@ -7,6 +7,9 @@ import HomePage from "../components/HomePage";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
+import { Button, Modal } from "flowbite-react";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 function Home() {
   const [posts, setPosts] = useState([]);
@@ -15,6 +18,8 @@ function Home() {
 
   const [loading, setLoading] = useState(false);
   // console.log(posts);
+
+  const [showModal, setShowModal] = useState(true);
 
   const toastOptions = {
     position: "top-center",
@@ -28,9 +33,10 @@ function Home() {
     transition: Bounce,
   };
 
-  if (!currentUser) {
-    toast.info("Sign in to create post", toastOptions);
-  }
+  // if (!currentUser) {
+  //   toast.info("Sign in to create post", toastOptions);
+
+  // }
 
   useEffect(() => {
     const allPosts = async () => {
@@ -71,6 +77,42 @@ function Home() {
         <div>
           <p>No Posts Available</p>
         </div>
+      )}
+      {!currentUser && (
+        <Modal
+          show={showModal}
+          onClose={() => setShowModal(false)}
+          popup
+          size={"md"}
+        >
+          <Modal.Header />
+          <Modal.Body>
+            <div className="text-center">
+              <HiOutlineExclamationCircle className="h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
+              <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
+                Sign In to Create Post
+              </h3>
+              <div className="flex justify-center gap-4">
+                <Link to={"/sign-in"}>
+                  <Button
+                    color="green"
+                    onClick={() => setShowModal(false)}
+                    className="bg-green-300"
+                  >
+                    Let&apos;s do it 😊
+                  </Button>
+                </Link>
+                <Button
+                  color="gray"
+                  onClick={() => setShowModal(false)}
+                  className="bg-red-200"
+                >
+                  Not now!🥹
+                </Button>
+              </div>
+            </div>
+          </Modal.Body>
+        </Modal>
       )}
       <ToastContainer />
     </div>

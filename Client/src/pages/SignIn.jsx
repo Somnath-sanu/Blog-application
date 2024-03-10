@@ -95,9 +95,9 @@ function SignIn() {
         <div className="flex-1">
           <Link to="/" className="text-4xl font-bold dark:text-white">
             {" "}
-            <span className="flex gap-1 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500 font-serif text-5xl">
+            <span className="flex gap-1 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500 font-serif text-5xl drop-shadow-lg">
               BL
-              <img src={blog} alt="" className="w-11 rounded-full" />G
+              <img src={blog} alt="" className="w-11 rounded-full" />GGY
             </span>
           </Link>
           <p className="text-sm mt-5 font-mono"> </p>

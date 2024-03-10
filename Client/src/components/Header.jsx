@@ -70,10 +70,10 @@ function Header() {
         className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white"
       >
         {" "}
-        <span className="flex gap-1 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500 font-serif text-xl">
+        <span className="flex gap-1 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500 font-serif text-xl drop-shadow-lg">
          BL
           <img src={blog} alt=""  className="w-8 rounded-full"/>
-          G
+          GGY
         </span>
         
       </Link>

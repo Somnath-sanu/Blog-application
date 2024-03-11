@@ -130,6 +130,7 @@ export const signin = async (req, res) => {
         email: user.email,
         _id: user._id,
         isAdmin: user.isAdmin,
+        profilePicture: user.profilePicture,
       });
   } catch (error) {
     console.log("Error logging :", error);

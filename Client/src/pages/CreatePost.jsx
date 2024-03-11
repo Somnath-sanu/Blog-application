@@ -132,8 +132,6 @@ function CreatePost() {
       return setPublishError("Content must be at least 50 words");
     }
 
-   
-
     try {
       const { data } = await axios.post("/api/post/create", {
         ...formData,
@@ -193,7 +191,9 @@ function CreatePost() {
             }
             disabled={imageUploadProgress}
           >
-            <option value="uncategorized">Select a category</option>
+            <option value="uncategorized" hidden>
+              Select a category
+            </option>
             <option value="coding">Coding</option>
             <option value="science">Science and Technology</option>
             <option value="lifestyle">Lifestyle</option>

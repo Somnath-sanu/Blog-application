@@ -192,7 +192,9 @@ function UpdatePost() {
             disabled={imageUploadProgress}
             value={formData.category && formData?.category}
           >
-            <option value="uncategorized">Select a category</option>
+            <option value="uncategorized" hidden>
+              Select a category
+            </option>
             <option value="coding">Coding</option>
             <option value="science">Science and Technology</option>
             <option value="lifestyle">Lifestyle</option>

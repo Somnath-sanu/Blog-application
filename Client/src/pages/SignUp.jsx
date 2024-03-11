@@ -12,6 +12,8 @@ import {
 } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 import blog from "../assests/blog5.jpg";
+import { IoEyeSharp } from "react-icons/io5";
+import { BsEyeSlashFill } from "react-icons/bs";
 
 function SignUp() {
   const [formData, setFormData] = useState({});
@@ -19,6 +21,7 @@ function SignUp() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     dispatch(initialPhase());
@@ -66,7 +69,7 @@ function SignUp() {
   };
 
   return (
-    <div className="min-h-screen mt-20">
+    <div className="min-h-screen mt-20 select-none">
       <div className="flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5">
         {/* left */}
 
@@ -75,7 +78,8 @@ function SignUp() {
             {" "}
             <span className="flex gap-1 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500 font-serif text-5xl drop-shadow-lg">
               BL
-              <img src={blog} alt="" className="w-11 rounded-full" />GGY
+              <img src={blog} alt="" className="w-11 rounded-full" />
+              GGY
             </span>
           </Link>
           <p className="text-md mt-5 font-serif">
@@ -110,16 +114,27 @@ function SignUp() {
                 required
               />
             </div>
-            <div>
+            <div className="relative">
               <Label value="Your password" />
               <TextInput
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 id="password"
                 onChange={handleChange}
                 required
                 minLength="4"
               />
+              {showPassword ? (
+                <IoEyeSharp
+                  className="absolute top-9 right-4 cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                />
+              ) : (
+                <BsEyeSlashFill
+                  className="absolute top-9 right-4 cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                />
+              )}
             </div>
             <Button
               gradientDuoTone="purpleToPink"

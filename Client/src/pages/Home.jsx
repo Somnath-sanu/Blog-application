@@ -11,6 +11,7 @@ import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
 
+
 function Home() {
   const [posts, setPosts] = useState([]);
 
@@ -70,7 +71,8 @@ function Home() {
 
   // console.log(posts);
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative space-y-10">
+      
       {posts ? (
         posts && posts.map((post) => <HomePage key={post._id} post={post} />)
       ) : (

@@ -84,7 +84,7 @@ function SignUp() {
           </Link>
           <p className="text-md mt-5 font-serif">
             {" "}
-            Please sign up to create a post.
+            
           </p>
         </div>
 

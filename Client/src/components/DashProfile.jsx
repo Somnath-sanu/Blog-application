@@ -330,15 +330,17 @@ export default function DashProfile() {
           )}
         </Button>
 
-        <Link to={"/create-post"}>
-          <Button
-            type="button"
-            className="w-full"
-            gradientDuoTone="purpleToPink"
-          >
-            Create a post
-          </Button>
-        </Link>
+        {currentUser.isAdmin && (
+          <Link to={"/create-post"}>
+            <Button
+              type="button"
+              className="w-full"
+              gradientDuoTone="purpleToPink"
+            >
+              Create a post
+            </Button>
+          </Link>
+        )}
 
         {error && <Alert color="failure">{error}</Alert>}
         {userUpdateSuccess && (

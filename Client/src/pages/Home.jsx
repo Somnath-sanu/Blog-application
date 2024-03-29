@@ -80,7 +80,7 @@ function Home() {
           <p>No Posts Available</p>
         </div>
       )}
-      {!currentUser && (
+      {/* {!currentUser && (
         <Modal
           show={showModal}
           onClose={() => setShowModal(false)}
@@ -115,7 +115,7 @@ function Home() {
             </div>
           </Modal.Body>
         </Modal>
-      )}
+      )} */}
       <ToastContainer />
     </div>
   );
